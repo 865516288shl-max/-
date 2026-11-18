@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f7f2" />
+    <title>暖商地图 · 经销商线索</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="暖商地图首页">
+        <span class="brand-mark">暖</span>
+        <span><strong>暖商地图</strong><small>经销商线索工作台</small></span>
+      </a>
+      <div class="topbar-right"><span class="private-pill"><i></i> 公开访问 · 无需登录</span></div>
+    </header>
+
+    <main class="shell">
+      <section class="welcome">
+        <div>
+          <div class="eyebrow">DEALER FINDER <span>·</span> 销售线索</div>
+          <h1>找到附近的水暖与锅炉经销商</h1>
+          <p>按地区与品类筛选门店，核实电话、记录跟进，并查看门店照片。</p>
+        </div>
+        <button class="primary-btn" id="addLeadBtn"><span>＋</span> 添加线索</button>
+      </section>
+
+      <section class="filters" aria-label="线索筛选">
+        <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="输入水暖、锅炉等关键词" /></label>
+        <label><span class="field-label">省份</span><select id="provinceFilter"><option value="">全部省份</option></select></label>
+        <label><span class="field-label">城市</span><select id="cityFilter"><option value="">全部城市</option></select></label>
+        <label><span class="field-label">区县</span><select id="countyFilter" disabled><option value="">加载区县中…</option></select></label>
+        <label><span class="field-label">镇/街道</span><select id="townFilter" disabled><option value="">先选区县</option></select></label>
+        <label><span class="field-label">经营品类</span><select id="categoryFilter"><option value="">全部品类</option><option>水暖</option><option>锅炉</option><option>暖通</option><option>管材管件</option></select></label>
+        <button class="primary-btn search-btn" id="searchBtn">搜索商户</button>
+        <button class="reset-btn" id="resetBtn">重置</button>
+      </section>
+
+      <section class="summary-row">
+        <div class="result-count"><strong id="resultCount">0</strong><span id="resultUnit">条线索</span><span class="summary-dot">·</span><span id="areaSummary">请选择地区</span></div>
+        <div class="summary-right"><span class="coverage-note"><span class="info-icon">i</span><span id="sourceNotice">高德搜索为实时结果，不保证覆盖全部商家</span></span><button class="text-btn" id="exportBtn" hidden>导出当前结果 CSV</button><button class="text-btn" id="importBtn">导入线索 CSV</button><input id="csvInput" type="file" accept=".csv,text/csv" hidden /></div>
+      </section>
+
+      <section class="workspace">
+        <aside class="results-panel">
+          <div class="panel-heading"><div><h2>经销商线索</h2><p>选择商家查看电话、照片与跟进信息</p></div><button class="icon-button" id="sortBtn" title="排序">↕</button></div>
+          <div class="lead-list" id="leadList"></div>
+          <div class="list-footer"><span class="map-key"><i class="pin-dot verified"></i>已核实</span><span class="map-key"><i class="pin-dot pending"></i>待核实</span><span class="map-key called-key"><i></i>已拨电话</span><button id="amapSetupBtn" class="map-settings">⚙ 地图设置</button></div>
+        </aside>
+        <div class="map-panel">
+          <div class="map-topline"><div class="map-title"><span class="map-icon">⌖</span><span id="mapAreaTitle">选择地区查看线索分布</span></div><div class="map-actions"><button id="mapZoomIn" class="map-control" aria-label="放大">＋</button><button id="mapZoomOut" class="map-control" aria-label="缩小">−</button><button id="locateBtn" class="map-control locate" aria-label="定位">◎</button></div></div>
+          <div class="map-canvas" id="mapCanvas">
+            <div class="map-placeholder" id="mapPlaceholder">
+              <div class="map-art" aria-hidden="true"><span class="river"></span><span class="road road-a"></span><span class="road road-b"></span><span class="road road-c"></span><span class="road road-d"></span><span class="district d1"></span><span class="district d2"></span><span class="district d3"></span><span class="district d4"></span></div>
+              <div class="map-empty-card"><div class="map-empty-symbol">⌖</div><strong>选择地区和品类开始搜索</strong><p>连接高德后展示实时商家与位置；结果仅供参考，请核对电话和经营信息。</p><button class="outline-btn" id="mapSetupInline">查看地图连接状态</button></div>
+              <div class="demo-map-label">地图示意</div>
+            </div>
+            <div id="amapContainer" class="amap-container" aria-label="高德地图"></div>
+            <div id="mapMarkers" class="map-markers" aria-label="演示点位"></div>
+            <div class="amap-attribution" id="amapAttribution" hidden>地图数据 © 高德地图</div>
+          </div>
+          <div class="map-bottomline"><span><i class="status-pulse"></i> <span id="mapStatus">当前为示意地图</span></span><span id="visibleCount">0 个门店</span></div>
+        </div>
+      </section>
+
+      <footer class="footnote"><span>公开访问：任何访问者都可查看、添加或修改网站线索及照片。高德结果为实时搜索，不代表全量名单。</span><button id="privacyBtn">数据与隐私说明</button></footer>
+    </main>
+
+    <dialog id="detailDialog" class="dialog detail-dialog"><form method="dialog"><button class="close-btn" aria-label="关闭">×</button></form><div id="detailContent"></div></dialog>
+    <dialog id="leadDialog" class="dialog form-dialog"><form id="leadForm"><div class="dialog-header"><div><div class="eyebrow">线索管理</div><h2 id="leadFormTitle">添加经销商线索</h2></div><button type="button" class="close-btn" data-close="leadDialog" aria-label="关闭">×</button></div><input type="hidden" id="leadId" /><div class="form-grid"><label class="wide">商家名称<input required id="leadName" maxlength="80" placeholder="例如：兴达水暖锅炉经销处" /></label><label>经营品类<select id="leadCategory"><option>水暖</option><option>锅炉</option><option>暖通</option><option>管材管件</option></select></label><label>电话<input id="leadPhone" type="tel" maxlength="32" placeholder="门店业务电话" /></label><label>省份<input required id="leadProvince" value="辽宁省" /></label><label>城市<input required id="leadCity" value="沈阳市" /></label><label>区县<input required id="leadCounty" value="新民市" /></label><label>镇/街道<input id="leadTown" maxlength="100" placeholder="可选" /></label><label class="wide">详细地址<input id="leadAddress" maxlength="180" placeholder="街道、门牌号" /></label><label>电话核验状态<select id="leadVerified"><option value="pending">待核实</option><option value="verified">已核实</option></select></label><label>电话来源<input id="leadSource" maxlength="100" placeholder="商家提供 / 人工核验 / 授权资料" /></label><label>高德 POI ID<input id="leadPoiId" maxlength="64" placeholder="可选，用于打开高德 POI 详情" /></label><label>纬度<input id="leadLat" type="number" min="-90" max="90" step="any" placeholder="可选" /></label><label>经度<input id="leadLng" type="number" min="-180" max="180" step="any" placeholder="可选" /></label><label>跟进状态<select id="leadFollow"><option>待联系</option><option>已联系</option><option>有意向</option><option>暂不合作</option></select></label></div><p class="form-hint">线索保存到网站服务器，所有访问者都能查看或修改。真实电话请确认来源与使用授权。</p><div class="dialog-actions"><button type="button" class="outline-btn" data-close="leadDialog">取消</button><button type="submit" class="primary-btn">保存线索</button></div></form></dialog>
+    <dialog id="photoDialog" class="dialog form-dialog"><form id="photoForm"><div class="dialog-header"><div><div class="eyebrow">商家授权图片</div><h2>添加门店照片</h2></div><button type="button" class="close-btn" data-close="photoDialog" aria-label="关闭">×</button></div><input type="hidden" id="photoLeadId" /><div class="photo-upload-zone"><div class="upload-symbol">↑</div><strong>选择门店照片</strong><p>JPG、PNG 或 WebP，单张不超过 10MB</p><input id="photoFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple required /></div><label class="consent-check"><input id="photoConsent" type="checkbox" required /><span>我确认已获得照片权利人授权，可在本线索工作台展示这些图片，并同意在授权撤回时删除。</span></label><label class="wide">上传者 / 授权来源<input id="photoUploader" required maxlength="100" placeholder="商家名称、联系人或授权记录编号" /></label><p class="form-hint">照片保存到网站服务器，所有访问者均可查看。</p><div class="dialog-actions"><button type="button" class="outline-btn" data-close="photoDialog">取消</button><button type="submit" class="primary-btn">确认授权并添加</button></div></form></dialog>
+    <dialog id="settingsDialog" class="dialog form-dialog"><form id="settingsForm"><div class="dialog-header"><div><div class="eyebrow">地图连接</div><h2>高德地图连接状态</h2></div><button type="button" class="close-btn" data-close="settingsDialog" aria-label="关闭">×</button></div><div class="settings-note"><strong id="mapConfigStatus">正在读取服务器地图配置…</strong><p>地图 Key 由管理员在服务端配置文件中维护，不保存在网页源码或每位员工的浏览器里。发布正式网址后，请在高德控制台限制该网址的域名，并确认商业服务许可。</p><a href="https://lbs.amap.com/api/javascript-api/summary" target="_blank" rel="noreferrer">查看高德 JS API 文档 ↗</a></div><p class="form-hint">连接后，只有有有效经纬度的线索才会显示真实地图标点。地图不负责返回本地区完整商家清单。</p><div class="dialog-actions"><button type="button" class="outline-btn" data-close="settingsDialog">关闭</button><button type="submit" class="primary-btn">重新连接</button></div></form></dialog>
+    <dialog id="privacyDialog" class="dialog form-dialog"><form method="dialog"><div class="dialog-header"><div><div class="eyebrow">数据与授权</div><h2>照片与隐私说明</h2></div><button class="close-btn" aria-label="关闭">×</button></div><div class="privacy-copy"><p><strong>公开访问：</strong>无需登录。任何访问者都能查看、添加、修改或删除网站线索、已拨标记和授权照片。请勿保存不适合公开的信息。</p><p><strong>高德地图照片：</strong>本工具不会下载或缓存高德照片。通过“在高德查看”打开高德 POI 详情页查看商家上传的照片。</p><p><strong>商家照片：</strong>只添加已获得权利人授权的门店图片。授权撤回后，可在商家详情中删除照片。</p><p><strong>高德搜索：</strong>结果不保证全量，且不会自动保存为本站线索。</p></div><div class="dialog-actions"><button class="primary-btn">知道了</button></div></form></dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

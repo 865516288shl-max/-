@@ -1,0 +1,33 @@
+services:
+  dealer-map:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      DATA_DIR: /data
+      COOKIE_SECURE: "1"
+    volumes:
+      - dealer_data:/data
+    expose:
+      - "8080"
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env to your site domain}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - dealer-map
+volumes:
+  dealer_data:
+  caddy_data:
+  caddy_config:
