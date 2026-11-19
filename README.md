@@ -4,7 +4,7 @@
 
 ## Cloudflare Pages 部署
 
-仓库采用 Pages Functions 提供 `/api/*` 接口，D1 共享线索和已拨记录，R2 保存商家授权照片。Pages 项目设置：生产分支 `main`，构建命令留空，输出目录 `public`，根目录 `/`。`functions/` 位于仓库根目录，由 Pages 自动构建。
+Pages 项目 `nuanshang-map` 已连接本仓库的 `main` 分支；仓库采用 Pages Functions 提供 `/api/*` 接口，D1 共享线索和已拨记录，R2 保存商家授权照片。项目设置：构建命令留空，输出目录 `public`，根目录 `/`。`functions/` 位于仓库根目录，由 Pages 自动构建。向 `main` 推送提交会触发自动部署。
 
 首次部署后在 Pages 项目设置绑定：D1 变量名 `DB`，数据库 `dealer-map-db`；R2 变量名 `PHOTOS`，存储桶 `dealer-map-photos`。运行 `migrations/0001_schema.sql` 初始化 D1。再添加运行时环境变量 `AMAP_KEY` 和 `AMAP_SECURITY_CODE`，然后重新部署。高德 Web JS Key 应限制允许域名为该 Pages 免费域名，并按高德控制台要求配置安全密钥。
 
