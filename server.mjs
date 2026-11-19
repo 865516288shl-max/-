@@ -93,7 +93,7 @@ function staticFile(res, pathname) {
   const file = allowed.get(pathname);
   if (!file) return json(res, 404, { error: "页面不存在。" });
   const types = { "index.html": "text/html; charset=utf-8", "styles.css": "text/css; charset=utf-8", "app.js": "text/javascript; charset=utf-8" };
-  readFile(path.join(ROOT, file)).then((content) => { res.writeHead(200, { "Content-Type": types[file], "Content-Length": content.length, "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "same-origin" }); res.end(content); }).catch(() => json(res, 404, { error: "页面不存在。" }));
+  readFile(path.join(ROOT, "public", file)).then((content) => { res.writeHead(200, { "Content-Type": types[file], "Content-Length": content.length, "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "same-origin" }); res.end(content); }).catch(() => json(res, 404, { error: "页面不存在。" }));
 }
 
 await mkdir(PHOTO_DIR, { recursive: true });

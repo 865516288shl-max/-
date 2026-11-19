@@ -2,7 +2,13 @@
 
 水暖、锅炉经销商查找与线索维护网页。全国省、市、区县通过高德行政区划服务加载；选中区县后继续加载可用的镇/街道选项。按选中地区、品类和关键词调用高德地点搜索，显示高德返回的电话和地址。自有线索、已拨标记及商家授权照片保存在服务端数据卷，网页定时同步共享状态。
 
-## 本地或服务器运行
+## Cloudflare Pages 部署
+
+仓库采用 Pages Functions 提供 `/api/*` 接口，D1 共享线索和已拨记录，R2 保存商家授权照片。Pages 项目设置：生产分支 `main`，构建命令留空，输出目录 `public`，根目录 `/`。`functions/` 位于仓库根目录，由 Pages 自动构建。
+
+首次部署后在 Pages 项目设置绑定：D1 变量名 `DB`，数据库 `dealer-map-db`；R2 变量名 `PHOTOS`，存储桶 `dealer-map-photos`。运行 `migrations/0001_schema.sql` 初始化 D1。再添加运行时环境变量 `AMAP_KEY` 和 `AMAP_SECURITY_CODE`，然后重新部署。高德 Web JS Key 应限制允许域名为该 Pages 免费域名，并按高德控制台要求配置安全密钥。
+
+## 本地运行
 
 1. 复制 `.env.example` 为 `.env`，填写 `DOMAIN`、高德 Web JS API Key 和安全密钥。
 2. 执行 `docker compose up -d --build`，然后访问 `https://DOMAIN`。
@@ -28,6 +34,6 @@
 
 ## 运维
 
-- `.env` 和照片目录均在 Git 忽略列表中，请勿提交凭据。
+- `.env`、线索数据、输出目录和本地依赖目录均在 Git 忽略列表中，请勿提交凭据或客户数据。
 - 线索、电话标记和照片保存在 Docker named volume `dealer_data`。部署前配置定期备份，并在备份副本上演练恢复。
 - 当前版本面向单进程试点部署。扩展到多实例时应迁移到托管数据库和对象存储。
